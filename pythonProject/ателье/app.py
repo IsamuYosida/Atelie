@@ -28,7 +28,7 @@ def load_user(user_id):
 with app.app_context():
     db.create_all()
 
-    # Добавляем тестовые данные
+    # Добавляем тестовые данные, если их нет
     if not Product.query.first():
         # Тестовые модели
         products = [
