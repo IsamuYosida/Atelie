@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Панель сотрудника</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Панель сотрудника</h1>
+        <p>Адрес: ул. Лермонтова, 28</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('routes.index') }}">Главная</a></li>
+            {% if not current_user.is_authenticated %}
+                <li><a href="{{ url_for('routes.register') }}">Регистрация</a></li>
+                <li><a href="{{ url_for('routes.login') }}">Вход</a></li>
+            {% else %}
+                <li><a href="{{ url_for('routes.profile') }}">Личный кабинет</a></li>
+                <li><a href="{{ url_for('routes.cart') }}">Корзина</a></li>
+                {% if current_user.is_employee %}
+                    <li><a href="{{ url_for('routes.employee_dashboard') }}">Панель сотрудника</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('routes.logout') }}">Выйти</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <section class="orders-list">
+        <h2>Все заказы</h2>
+        <ul>
+            {% for order in orders %}
+            <li class="order-item">
+                <div class="order-header">
+                    Заказ #{{ order.id }} - Пользователь: {{ order.user.username }} - Статус: <span class="status-{{ order.status|lower|replace(' ', '-') }}">{{ order.status }}</span> - Сумма: {{ order.total_price }} руб.
+                </div>
+                <div class="order-details">
+                    <ul>
+                        {% if order.product %}
+                            <li>Товар: {{ order.product.name }}</li>
+                        {% endif %}
+                        {% if order.custom_description and order.custom_description != "None" %}
+                            <li>Авторский заказ: {{ order.custom_description }}</li>
+                        {% endif %}
+                        <li>Размер: {{ order.size }}</li>
+                        <li>Цвет: {{ order.color }}</li>
+                    </ul>
+                </div>
+                <form method="POST" action="{{ url_for('routes.update_order_status', order_id=order.id) }}" class="status-form">
+                    <select name="status">
+                        <option value="Ожидает подтверждения" {% if order.status == "Ожидает подтверждения" %}selected{% endif %}>Ожидает подтверждения</option>
+                        <option value="В процессе" {% if order.status == "В процессе" %}selected{% endif %}>В процессе</option>
+                        <option value="Готов к выдаче" {% if order.status == "Готов к выдаче" %}selected{% endif %}>Готов к выдаче</option>
+                        <option value="Завершен" {% if order.status == "Завершен" %}selected{% endif %}>Завершен</option>
+                    </select>
+                    <button type="submit">Обновить статус</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <section class="statistics-container">
+        <div class="fabric-statistics">
+            <h2>Статистика по ткани</h2>
+            <p>Всего ткани потрачено: <strong>{{ total_fabric_used }} метров</strong></p>
+            <p>Рекомендуется закупить: <strong>{{ "%.2f"|format(total_fabric_used * 1.2) }} метров</strong> (с запасом 20%)</p>
+        </div>
+
+        <div class="order-statistics">
+            <h2>Статистика по заказам</h2>
+            <p>Всего завершено заказов: <strong>{{ total_orders_completed }}</strong></p>
+            <p>Общая выручка: <strong>{{ total_revenue }} руб.</strong></p>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Ателье по адресу Лермонтова 28. Все права сдвинуты влево. Не курить в кладовке. Дина, еще раз замечу - уволю!!!</p>
+    </footer>
+</body>
+</html>

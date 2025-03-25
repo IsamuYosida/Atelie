@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <h1>Почему выбирают наше ателье?</h1>
+    <div class="advantages">
+        <div class="advantage-item">
+            <h3>Идеальное расположение</h3>
+            <p>Наше ателье находится в самом сердце города, всего в 5 минутах ходьбы от центральной площади. Вам не придётся далеко ехать - мы работаем там, где вам удобно!</p>
+        </div>
+        <div class="advantage-item">
+            <h3>Профессионализм</h3>
+            <p>Наши мастера - настоящие профессионалы с многолетним опытом. Каждое изделие создаётся с вниманием к деталям и безупречным качеством.</p>
+        </div>
+        <div class="advantage-item">
+            <h3>Точные сроки</h3>
+            <p>Мы ценим ваше время и гарантируем выполнение заказа точно в оговоренный срок. Никаких неожиданных задержек - только чёткие обещания!</p>
+        </div>
+    </div>
+    <div class="order-notice">
+        <p>На нашем сайте вы можете выбрать понравившиеся модели и оформить предварительный заказ. Не переживайте, если не уверены в размерах - перед оплатой мы обязательно встретимся с вами в нашем офисе, где уточним все детали и проведём необходимые замеры.</p>
+    </div>
+</div>
+
+<div class="product-grid">
+    {% for product in products %}
+    <div class="product-item">
+        <img src="{{ url_for('static', filename=product.image ) }}" alt="{{ product.name }}" class="product-image">
+        <h3>{{ product.name }}</h3>
+        <p>{{ product.base_price }} руб.</p>
+        <form method="POST" action="{{ url_for('routes.add_to_cart', product_id=product.id) }}" onsubmit="addToCart(event)">
+            <label for="size-{{ product.id }}">Размер:</label>
+            <input type="text" id="size-{{ product.id }}" name="size" required><br>
+
+            <label>Цвет:</label>
+            <div class="color-options">
+                <label>
+                    <input type="radio" name="color" value="синий" required>
+                    <span class="color-dot" style="background-color: blue;"></span>
+                </label>
+                <label>
+                    <input type="radio" name="color" value="красный">
+                    <span class="color-dot" style="background-color: red;"></span>
+                </label>
+                <label>
+                    <input type="radio" name="color" value="зеленый">
+                    <span class="color-dot" style="background-color: green;"></span>
+                </label>
+                <label>
+                    <input type="radio" name="color" value="черный">
+                    <span class="color-dot" style="background-color: black;"></span>
+                </label>
+                <label>
+                    <input type="radio" name="color" value="белый">
+                    <span class="color-dot" style="background-color: white; border: 1px solid black;"></span>
+                </label>
+            </div>
+
+            <label for="quantity-{{ product.id }}">Количество:</label>
+            <input type="number" id="quantity-{{ product.id }}" name="quantity" value="1" min="1" required><br>
+            <button type="submit">Добавить в корзину</button>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Кнопка для создания авторского заказа -->
+<div class="custom-order-button">
+    <a href="{{ url_for('routes.custom_order') }}" class="btn">Создать авторский заказ</a>
+</div>
+
+<script>
+    function addToCart(event) {
+        event.preventDefault();  // Отменяем стандартное поведение формы
+        const form = event.target;
+        fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Товар добавлен в корзину!');
+            } else {
+                alert('Ошибка при добавлении товара в корзину.');
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка:', error);
+        });
+    }
+</script>
+{% endblock %}

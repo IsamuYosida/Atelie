@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Корзина{% endblock %}
+
+{% block content %}
+<section class="cart-items">
+    <h2>Товары в корзине</h2>
+    <ul>
+        {% for item in cart_items %}
+        <li>
+            {% if item.product %}
+                {{ item.product.name }} (Размер: {{ item.size }}, Цвет: {{ item.color }}) - {{ item.quantity }} шт. - {{ item.product.base_price * item.quantity }} руб.
+            {% else %}
+                {{ item.custom_description }} (Размер: {{ item.size }}, Цвет: {{ item.color }}) - {{ item.quantity }} шт. - {{ item.total_price }} руб.
+            {% endif %}
+            <a href="{{ url_for('routes.remove_from_cart', cart_id=item.id) }}">Удалить</a>
+        </li>
+        {% endfor %}
+    </ul>
+    <h3>Итого: {{ total_price }} руб.</h3>
+</section>
+
+<!-- Кнопка "Оформить заказ" -->
+<form method="POST" action="{{ url_for('routes.checkout') }}">
+    <button type="submit">Оформить заказ</button>
+</form>
+
+<!-- Кнопка для создания авторского заказа -->
+<div class="custom-order-button">
+    <a href="{{ url_for('routes.custom_order') }}" class="btn">Создать авторский заказ</a>
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Личный кабинет{% endblock %}
+
+{% block content %}
+<section class="profile-info">
+    <h2>Добро пожаловать, {{ user.username }}!</h2>
+    <h3>Ваши заказы</h3>
+    <ul>
+        {% for order in orders %}
+        <li>
+            Заказ #{{ order.id }} - Статус: {{ order.status }} - Сумма: {{ order.total_price }} руб.
+            <ul>
+                {% if order.product %}
+                    <li>Товар: {{ order.product.name }}</li>
+                {% endif %}
+                {% if order.custom_description and order.custom_description != "None" %}
+                    <li>Авторский заказ: {{ order.custom_description }}</li>
+                {% endif %}
+                <li>Размер: {{ order.size }}</li>
+                <li>Цвет: {{ order.color }}</li>
+            </ul>
+        </li>
+        {% endfor %}
+    </ul>
+</section>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Оформление заказа{% endblock %}
+
+{% block content %}
+<section class="checkout-items">
+    <h2>Товары в заказе</h2>
+    <ul>
+        {% for item in cart_items %}
+        <li>
+            {% if item.product %}
+                {{ item.product.name }} (Размер: {{ item.size }}, Цвет: {{ item.color }}) - {{ item.quantity }} шт. - {{ item.product.base_price * item.quantity }} руб.
+            {% else %}
+                {{ item.custom_description }} (Размер: {{ item.size }}, Цвет: {{ item.color }}) - {{ item.quantity }} шт. - {{ item.total_price }} руб.
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    <h3>Итого: {{ sum(item.product.base_price * item.quantity if item.product else item.total_price for item in cart_items) }} руб.</h3>
+</section>
+
+<form method="POST" action="{{ url_for('routes.checkout') }}">
+    <button type="submit">Подтвердить заказ</button>
+</form>
+{% endblock %}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Ателье{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>{% block header %}Ателье{% endblock %}</h1>
+        <p>Адрес: ул. Лермонтова, 28</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('routes.index') }}">Главная</a></li>
+            {% if not current_user.is_authenticated %}
+                <li><a href="{{ url_for('routes.register') }}">Регистрация</a></li>
+                <li><a href="{{ url_for('routes.login') }}">Вход</a></li>
+            {% else %}
+                <li><a href="{{ url_for('routes.profile') }}">Личный кабинет</a></li>
+                <li><a href="{{ url_for('routes.cart') }}">Корзина</a></li>
+                {% if current_user.is_employee %}
+                    <li><a href="{{ url_for('routes.employee_dashboard') }}">Панель сотрудника</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('routes.logout') }}">Выйти</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+
+    <section class="content">
+        {% block content %}{% endblock %}
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Ателье по адресу Лермонтова 28. Все права сдвинуты влево.Набрано обезьяной. ГлавВред - Крец. Перед использованием проконсультироваться с психиатром</p>
+    </footer>
+</body>
+</html>
