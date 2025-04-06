@@ -19,20 +19,6 @@
 - **База данных**: SQLite (с возможностью миграций через Flask-Migrate)
 - **Дополнительно**: Flask-Login, Flask-WTF, SQLAlchemy
 
-## Структура:
-##atelier/
-##├── app/
-##│   ├── __init__.py       # Инициализация приложения
-##│   ├── routes.py         # Маршруты Flask
-##│   ├── models.py         # Модели базы данных
-##│   ├── extensions.py     # Расширения Flask
-##│   ├── templates/        # Шаблоны Jinja2
-##│   └── static/           # Статические файлы (CSS, JS)
-##├── migrations/           # Миграции базы данных
-##├── instance/             # Файлы экземпляра (база данных)
-##├── config.py             # Конфигурация приложения
-##├── requirements.txt      # Зависимости Python
-##└── README.md             # Этот файл
 
 Запуск через app.py или
 ### Установка
