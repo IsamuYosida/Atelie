@@ -1,10 +1,6 @@
 name: Python Tests
 
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+on: [push, pull_request]
 
 jobs:
   test:
@@ -13,7 +9,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set up Python 3.10
+    - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: "3.10"
@@ -26,8 +22,7 @@ jobs:
 
     - name: Run tests
       env:
-        PYTHONPATH: "${{ github.workspace }}"
         FLASK_ENV: testing
-        GITHUB_ACTIONS: "true"  # Важно для активации CI-режима
       run: |
-        pytest tests/ -v --cov=atelie --cov-report=xml
+        cd tests
+        pytest -v --cov=../ --cov-report=xml

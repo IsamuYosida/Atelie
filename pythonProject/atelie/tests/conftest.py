@@ -4,12 +4,12 @@ import tempfile
 import sys
 from pathlib import Path
 
-# Добавляем папку проекта в PYTHONPATH
-sys.path.append(str(Path(__file__).parent.parent))
+# Важно: добавляем родительскую директорию в PYTHONPATH
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from atelie.app import app as flask_app
-from atelie.extensions import db
-from atelie.models import User, Product, Material, Cart, Order
+from app import app as flask_app
+from extensions import db
+from models import User, Product, Material, Cart, Order
 
 # Флаг для CI
 is_ci = os.environ.get('GITHUB_ACTIONS') == 'true'
