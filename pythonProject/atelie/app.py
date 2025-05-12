@@ -1,51 +1,52 @@
-from datetime import datetime
-from flask_login import UserMixin
-from extensions import db
+from flask import Flask
+from flask_login import LoginManager
+from config import Config
+from extensions import db, migrate
+from models import User, Product, Material, Cart, Order
+from routes import routes_bp
 
-class User(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    password = db.Column(db.String(120), nullable=False)
-    is_employee = db.Column(db.Boolean, default=False)
-    orders = db.relationship('Order', backref='user', lazy=True)
-    carts = db.relationship('Cart', backref='user', lazy=True)
+app = Flask(__name__)
+app.config.from_object(Config)
 
-class Product(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    base_price = db.Column(db.Float, nullable=False)
-    image = db.Column(db.String(200))
-    carts = db.relationship('Cart', backref='product', lazy=True)
+# Инициализация Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
 
-class Material(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    price_per_meter = db.Column(db.Float, nullable=False)
+# Инициализация базы данных и миграций
+db.init_app(app)
+migrate.init_app(app, db)
 
-class Cart(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
-    size = db.Column(db.String(50), nullable=False)
-    color = db.Column(db.String(50), nullable=False)
-    quantity = db.Column(db.Integer, default=1)
-    custom_description = db.Column(db.String(500))  # Для авторских заказов
-    total_price = db.Column(db.Float, nullable=False)  # Общая стоимость
+# Регистрация Blueprint
+app.register_blueprint(routes_bp)
 
-class Order(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
-    product = db.relationship('Product', backref='orders')  # Добавлено отношение
-    custom_description = db.Column(db.String(500))
-    size = db.Column(db.String(50), nullable=False)
-    color = db.Column(db.String(50), nullable=False)
-    material_id = db.Column(db.Integer, db.ForeignKey('material.id'))
-    status = db.Column(db.String(50), default="Ожидает подтверждения")
-    total_price = db.Column(db.Float, nullable=False)
-    quantity = db.Column(db.Integer, nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+# Загрузка пользователя для Flask-Login
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
-    def is_custom(self):
-        """Проверяет, является ли заказ авторским."""
-        return self.custom_description is not None and self.custom_description != "None"
+# Создание базы данных и добавление тестовых данных
+with app.app_context():
+    db.create_all()
+
+    # Добавляем тестовые данные
+    if not Product.query.first():
+        # Тестовые модели
+        products = [
+            Product(name="Футболка", base_price=1000, image="images/t-shirt.jpg"),
+            Product(name="Джинсы", base_price=2500, image="images/jeans.jpg"),
+            Product(name="Платье", base_price=3000, image="images/dress.jpg"),
+        ]
+        db.session.add_all(products)
+
+        # Тестовые материалы
+        materials = [
+            Material(name="Хлопок", price_per_meter=500),
+            Material(name="Джинсовая ткань", price_per_meter=800),
+            Material(name="Шёлк", price_per_meter=1200),
+        ]
+        db.session.add_all(materials)
+
+        db.session.commit()
+
+if __name__ == '__main__':
+    app.run(debug=True)
