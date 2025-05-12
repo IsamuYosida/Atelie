@@ -7,9 +7,9 @@ from pathlib import Path
 # Важно: добавляем родительскую директорию в PYTHONPATH
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from app import app as flask_app
-from extensions import db
-from models import User, Product, Material, Cart, Order
+from pythonProject.atelie.app import app as flask_app
+from pythonProject.atelie.extensions import db
+from pythonProject.atelie.models import User, Product, Material, Cart, Order
 
 # Флаг для CI
 is_ci = os.environ.get('GITHUB_ACTIONS') == 'true'
