@@ -1,6 +1,14 @@
 from datetime import datetime
 from flask_login import UserMixin
 from extensions import db
+from pythonProject.atelie.extensions import db
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base(metadata=db.metadata)  # Используем общий MetaData
+
+class User(Base, UserMixin):
+    __tablename__ = 'users'  # Измените имя таблицы для избежания конфликтов
+    # остальные поля
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)

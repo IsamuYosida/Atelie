@@ -4,51 +4,34 @@ import tempfile
 import sys
 from pathlib import Path
 
-# Важно: добавляем родительскую директорию в PYTHONPATH
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# Фикс для дублирования моделей
+from sqlalchemy import MetaData
 
-from pythonProject.atelie.app import app as flask_app
+metadata = MetaData()
+
+# Добавляем путь к проекту
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+
 from pythonProject.atelie.extensions import db
-from pythonProject.atelie.models import User, Product, Material, Cart, Order
 
-# Флаг для CI
-is_ci = os.environ.get('GITHUB_ACTIONS') == 'true'
+db.metadata = metadata  # Используем единый MetaData
 
-@pytest.fixture
+
+@pytest.fixture(scope='session')
 def app():
-    """Create and configure a new app instance for each test."""
-    # Настройка БД
-    if is_ci:
-        flask_app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-    else:
-        db_fd, db_path = tempfile.mkstemp()
-        flask_app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
+    """Глобальная фикстура приложения"""
+    from pythonProject.atelie.app import app as flask_app
 
+    # Настройка тестовой БД
+    flask_app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
     flask_app.config['TESTING'] = True
     flask_app.config['WTF_CSRF_ENABLED'] = False
 
     with flask_app.app_context():
         db.create_all()
-        if not is_ci:  # Добавляем тестовые данные только локально
-            products = [
-                Product(name="Футболка", base_price=1000, image="images/t-shirt.jpg"),
-                Product(name="Джинсы", base_price=2500, image="images/jeans.jpg"),
-            ]
-            db.session.add_all(products)
-
-            materials = [
-                Material(name="Хлопок", price_per_meter=500),
-                Material(name="Джинсовая ткань", price_per_meter=800),
-            ]
-            db.session.add_all(materials)
-            db.session.commit()
-
         yield flask_app
+        db.drop_all()
 
-    # Очистка (только для локальных тестов)
-    if not is_ci:
-        os.close(db_fd)
-        os.unlink(db_path)
 
 @pytest.fixture
 def client(app):

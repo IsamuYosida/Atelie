@@ -23,6 +23,6 @@ jobs:
     - name: Run tests
       env:
         FLASK_ENV: testing
-        PYTHONPATH: "${{ github.workspace }}/pythonProject"  # Критически важно!
+        PYTHONPATH: "${{ github.workspace }}/pythonProject"
       run: |
-        pytest pythonProject/atelie/tests/ -v --cov=pythonProject/atelie/ --cov-report=xml
+        pytest pythonProject/atelie/tests/ -v --cov=pythonProject/atelie --cov-report=xml
