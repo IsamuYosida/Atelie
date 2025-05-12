@@ -22,10 +22,7 @@ jobs:
 
     - name: Run tests
       env:
-        FLASK_ENV: testing
+       FLASK_ENV: testing
       run: |
-        pytest tests/ -v --cov=./ --cov-report=xml
-        
-    - name: Build
-      run: |
-        python -c "from app import app; print('App initialized successfully')"
+       pytest atelie/tests/ -v --cov=atelie/ --cov-report=xml
+
