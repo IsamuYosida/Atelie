@@ -1,4 +1,4 @@
-name: Python Tests
+name: CI Tests
 
 on: [push, pull_request]
 
@@ -9,7 +9,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set up Python
+    - name: Set up Python 3.10
       uses: actions/setup-python@v4
       with:
         python-version: "3.10"
@@ -24,5 +24,8 @@ jobs:
       env:
         FLASK_ENV: testing
       run: |
-        cd tests
-        pytest -v --cov=../ --cov-report=xml
+        pytest tests/ -v --cov=./ --cov-report=xml
+        
+    - name: Build
+      run: |
+        python -c "from app import app; print('App initialized successfully')"
