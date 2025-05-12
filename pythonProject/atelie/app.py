@@ -1,9 +1,9 @@
 from flask import Flask
 from flask_login import LoginManager
-from config import Config
-from extensions import db, migrate
-from models import User, Product, Material, Cart, Order
-from routes import routes_bp
+from .config import Config  # Точка в начале указывает на относительный импорт
+from .extensions import db, migrate
+from .models import User, Product, Material, Cart, Order
+from .routes import routes_bp
 
 app = Flask(__name__)
 app.config.from_object(Config)

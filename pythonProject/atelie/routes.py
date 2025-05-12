@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
 from flask_login import login_user, logout_user, current_user, login_required
-from models import User, Product, Material, Cart, Order
-from extensions import db
+from .models import User, Product, Material, Cart, Order
+from .extensions import db
 
 routes_bp = Blueprint('routes', __name__)
 
