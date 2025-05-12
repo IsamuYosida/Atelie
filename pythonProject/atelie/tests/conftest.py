@@ -1,71 +1,51 @@
-import pytest
-import os
-import tempfile
-import sys
-from pathlib import Path
-
-# Важно: добавляем родительскую директорию в PYTHONPATH
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
-from app import app as flask_app
+from datetime import datetime
+from flask_login import UserMixin
 from extensions import db
-from models import User, Product, Material, Cart, Order
 
-# Флаг для CI
-is_ci = os.environ.get('GITHUB_ACTIONS') == 'true'
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    password = db.Column(db.String(120), nullable=False)
+    is_employee = db.Column(db.Boolean, default=False)
+    orders = db.relationship('Order', backref='user', lazy=True)
+    carts = db.relationship('Cart', backref='user', lazy=True)
 
-@pytest.fixture
-def app():
-    """Create and configure a new app instance for each test."""
-    # Настройка БД
-    if is_ci:
-        flask_app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-    else:
-        db_fd, db_path = tempfile.mkstemp()
-        flask_app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
+class Product(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    base_price = db.Column(db.Float, nullable=False)
+    image = db.Column(db.String(200))
+    carts = db.relationship('Cart', backref='product', lazy=True)
 
-    flask_app.config['TESTING'] = True
-    flask_app.config['WTF_CSRF_ENABLED'] = False
+class Material(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    price_per_meter = db.Column(db.Float, nullable=False)
 
-    with flask_app.app_context():
-        db.create_all()
-        if not is_ci:  # Добавляем тестовые данные только локально
-            products = [
-                Product(name="Футболка", base_price=1000, image="images/t-shirt.jpg"),
-                Product(name="Джинсы", base_price=2500, image="images/jeans.jpg"),
-            ]
-            db.session.add_all(products)
+class Cart(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
+    size = db.Column(db.String(50), nullable=False)
+    color = db.Column(db.String(50), nullable=False)
+    quantity = db.Column(db.Integer, default=1)
+    custom_description = db.Column(db.String(500))  # Для авторских заказов
+    total_price = db.Column(db.Float, nullable=False)  # Общая стоимость
 
-            materials = [
-                Material(name="Хлопок", price_per_meter=500),
-                Material(name="Джинсовая ткань", price_per_meter=800),
-            ]
-            db.session.add_all(materials)
-            db.session.commit()
+class Order(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
+    product = db.relationship('Product', backref='orders')  # Добавлено отношение
+    custom_description = db.Column(db.String(500))
+    size = db.Column(db.String(50), nullable=False)
+    color = db.Column(db.String(50), nullable=False)
+    material_id = db.Column(db.Integer, db.ForeignKey('material.id'))
+    status = db.Column(db.String(50), default="Ожидает подтверждения")
+    total_price = db.Column(db.Float, nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
-        yield flask_app
-
-    # Очистка (только для локальных тестов)
-    if not is_ci:
-        os.close(db_fd)
-        os.unlink(db_path)
-
-@pytest.fixture
-def client(app):
-    return app.test_client()
-
-@pytest.fixture
-def runner(app):
-    return app.test_cli_runner()
-
-@pytest.fixture(autouse=True)
-def cleanup_db(app):
-    """Автоматическая очистка БД после тестов"""
-    yield
-    with app.app_context():
-        db.session.query(Order).delete()
-        db.session.query(Cart).delete()
-        db.session.query(Product).delete()
-        db.session.query(Material).delete()
-        db.session.query(User).delete()
-        db.session.commit()
+    def is_custom(self):
+        """Проверяет, является ли заказ авторским."""
+        return self.custom_description is not None and self.custom_description != "None"
