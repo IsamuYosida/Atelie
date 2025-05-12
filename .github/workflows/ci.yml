@@ -17,13 +17,13 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
+        pip install -e pythonProject/  # Установка в режиме разработки
         pip install pytest pytest-cov
-        pip install -r pythonProject/requirements.txt
         pip install flask-migrate
 
     - name: Run tests
       env:
         FLASK_ENV: testing
-        PYTHONPATH: "${{ github.workspace }}/pythonProject"
       run: |
-        pytest pythonProject/atelie/tests/ -v --cov=pythonProject/atelie --cov-report=xml
+        cd pythonProject
+        pytest atelie/tests/ -v --cov=atelie --cov-report=xml
