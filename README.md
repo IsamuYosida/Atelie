@@ -24,8 +24,8 @@
 
 # Atelie - Система управления ателье
 
-[![CI Tests](https://github.com/IsamuYosida/Atelie/actions/workflows/ci.yml/badge.svg)](https://github.com/IsamuYosida/Atelie/actions/workflows/ci.yml)
-[![Coverage](https://codecov.io/gh/IsamuYosida/Atelie/branch/main/graph/badge.svg)](https://codecov.io/gh/IsamuYosida/Atelie)
+[![CI Tests](https://github.com/IsamuYosida/Atelie/actions/workflows/ci.yml/badge.svg)](https://github.com/IsamuYosida/Atelie/actions)
+[![Coverage](https://codecov.io/gh/IsamuYosida/Atelie/branch/main/graph/badge.svg?token=YOUR_CODECOV_TOKEN)](https://codecov.io/gh/IsamuYosida/Atelie)
 
 ## О проекте
 
