@@ -24,19 +24,35 @@
 
 # Atelie - Система управления ателье
 
-![Tests](https://github.com/IsamuYosida/Atelie/actions/workflows/ci.yml/badge.svg)
-![Build](https://github.com/IsamuYosida/Atelie/actions/workflows/build.yml/badge.svg)
+[![CI Tests](https://github.com/IsamuYosida/Atelie/actions/workflows/ci.yml/badge.svg)](https://github.com/IsamuYosida/Atelie/actions/workflows/ci.yml)
+[![Coverage](https://codecov.io/gh/IsamuYosida/Atelie/branch/main/graph/badge.svg)](https://codecov.io/gh/IsamuYosida/Atelie)
 
-## CI/CD Pipeline
-Проект использует GitHub Actions для автоматизации:
+## О проекте
 
-### Тестирование (`ci.yml`)
-- Запуск pytest с покрытием кода
+Flask-приложение для управления заказами в ателье...
+
+## CI/CD Статус
+
+Наш процесс непрерывной интеграции включает:
+
+✅ **Автоматическое тестирование**:
+- Запуск unit-тестов при каждом push/pull request
+- Проверка покрытия кода (coverage)
 - Интеграция с PostgreSQL
-- Проверка всех маршрутов Flask
-- Отправка отчета о покрытии в Codecov
 
-###Пока работают только тесты!!!
+# Пример конфигурации тестов
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:13
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run tests
+        run: pytest --cov=atelie
+
+##Пока работают только тесты!!!
 
 Запуск через app.py или
 ### Установка
