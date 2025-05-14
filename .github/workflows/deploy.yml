@@ -1,0 +1,27 @@
+name: Deploy Preview
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install gunicorn
+
+    - name: Run server (для демонстрации)
+      run: |
+        gunicorn --bind 0.0.0.0:5000 app:app &
+        sleep 5
+        curl http://localhost:5000
