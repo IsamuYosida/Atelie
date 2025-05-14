@@ -20,7 +20,6 @@
 - **Дополнительно**: Flask-Login, Flask-WTF, SQLAlchemy
 
 Дополнение: требуется создание папки ателье/instance для корректной работы программы. Автоматического создания пока нет
- 
 
 # Atelie - тесты
 
@@ -35,17 +34,8 @@
 - Проверка покрытия кода (coverage)
 - Интеграция с PostgreSQL
 
-# Пример конфигурации тестов
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:13
-    steps:
-      - uses: actions/checkout@v4
-      - name: Run tests
-        run: pytest --cov=atelie
+# Пример конфигурации тестов:
+run: pytest --cov=atelie
 
 ##Пока работают только тесты!!!
 
@@ -57,4 +47,4 @@ cd Atelie
 python -m venv venv
 source venv/bin/activate  # Linux/MacOS
 venv\Scripts\activate     # Windows
-pip install -r requirements.txt
+pip install -r requirements.txt 
