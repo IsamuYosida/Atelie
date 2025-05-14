@@ -25,6 +25,7 @@
 # Atelie - тесты
 
 [![codecov](https://codecov.io/gh/IsamuYosida/Atelie/graph/badge.svg?token=79P2EDXU28)](https://codecov.io/gh/IsamuYosida/Atelie)
+https://codecov.io/gh/IsamuYosida/Atelie/graphs/sunburst.svg?token=79P2EDXU28
 
 ## CI/CD Статус
 
