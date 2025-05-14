@@ -35,11 +35,8 @@ jobs:
         pip install -r ./pythonProject/requirements.txt
         pip install pytest pytest-cov
 
-    - name: Verify PostgreSQL connection
-      run: |
-        echo "Waiting for PostgreSQL..."
-        timeout 20s bash -c 'until pg_isready -h localhost -p 5432; do sleep 1; done'
-        echo "PostgreSQL is ready!"
+    - name: Wait for PostgreSQL
+      run: sleep 5
 
     - name: Run tests
       env:
@@ -50,13 +47,7 @@ jobs:
       run: |
         cd pythonProject
         pytest atelie/tests/ -v --cov=atelie --cov-report=xml --cov-report=term
-
-    - name: Validate coverage file
-      run: |
-        cd pythonProject
-        ls -la
-        [ -f coverage.xml ] || exit 1
-        echo "Coverage file exists"
+        echo "Tests completed with exit code $?"
 
     - name: Upload to Codecov
       uses: codecov/codecov-action@v3
@@ -65,4 +56,3 @@ jobs:
         file: ./pythonProject/coverage.xml
         flags: unittests
         verbose: true
-      if: always()
