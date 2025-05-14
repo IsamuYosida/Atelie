@@ -25,7 +25,6 @@
 # Atelie - Система управления ателье
 
 ![Tests](https://github.com/IsamuYosida/Atelie/actions/workflows/ci.yml/badge.svg)
-![Build](https://github.com/IsamuYosida/Atelie/actions/workflows/build.yml/badge.svg)
 
 ## CI/CD Pipeline
 Проект использует GitHub Actions для автоматизации:
