@@ -22,6 +22,22 @@
 Дополнение: требуется создание папки ателье/instance для корректной работы программы. Автоматического создания пока нет
  
 
+# Atelie - Система управления ателье
+
+![Tests](https://github.com/IsamuYosida/Atelie/actions/workflows/ci.yml/badge.svg)
+![Build](https://github.com/IsamuYosida/Atelie/actions/workflows/build.yml/badge.svg)
+
+## CI/CD Pipeline
+Проект использует GitHub Actions для автоматизации:
+
+### Тестирование (`ci.yml`)
+- Запуск pytest с покрытием кода
+- Интеграция с PostgreSQL
+- Проверка всех маршрутов Flask
+- Отправка отчета о покрытии в Codecov
+
+###Пока работают только тесты!!!
+
 Запуск через app.py или
 ### Установка
 ```bash
