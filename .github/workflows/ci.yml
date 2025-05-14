@@ -49,10 +49,13 @@ jobs:
         pytest atelie/tests/ -v --cov=atelie --cov-report=xml --cov-report=term
         echo "Tests completed with exit code $?"
 
+    - name: Set CODECOV_TOKEN
+      run: echo "CODECOV_TOKEN=dfe0eaf4-bb8d-4245-a7e9-0524af1f182a" >> $GITHUB_ENV
+
     - name: Upload to Codecov
       uses: codecov/codecov-action@v3
       with:
-        token: ${{ secrets.CODECOV_TOKEN }}
+        token: ${{ env.CODECOV_TOKEN }}
         file: ./pythonProject/coverage.xml
         flags: unittests
         verbose: true
