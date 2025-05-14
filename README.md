@@ -25,7 +25,7 @@
 # Atelie - тесты
 
 [![CI Tests](https://github.com/IsamuYosida/Atelie/actions/workflows/ci.yml/badge.svg)](https://github.com/IsamuYosida/Atelie/actions)
-[![Coverage](https://codecov.io/gh/IsamuYosida/Atelie/branch/main/graph/badge.svg?token=YOUR_CODECOV_TOKEN)](https://codecov.io/gh/IsamuYosida/Atelie)
+[![codecov](https://codecov.io/gh/IsamuYosida/Atelie/graph/badge.svg?token=79P2EDXU28)](https://codecov.io/gh/IsamuYosida/Atelie)
 
 ## CI/CD Статус
 
