@@ -1,74 +1,24 @@
-name: Build Project
+name: Build
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+on: [push, pull_request]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:13
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: test_db
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-
     steps:
     - uses: actions/checkout@v4
-
     - name: Set up Python 3.10
       uses: actions/setup-python@v4
       with:
         python-version: "3.10"
-        cache: 'pip'
 
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
+        pip install --upgrade pip
         pip install -r requirements.txt
-        pip install gunicorn
+        pip install gunicorn  # Для деплоя
 
-    - name: Verify database connection
-      env:
-        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+    - name: Verify Flask app
       run: |
-        python -c "
-        from sqlalchemy import create_engine
-        engine = create_engine('$DATABASE_URL')
-        conn = engine.connect()
-        print('✅ Database connection successful')
-        conn.close()
-        "
-
-    - name: Build static assets (если используете)
-      run: |
-        flask assets build  # Для проектов с webpack и т.п.
-
-    - name: Check Flask app initialization
-      env:
-        FLASK_APP: app.py
-        FLASK_ENV: production
-      run: |
-        python -c "
-        from app import app
-        print('✅ Flask app initialized successfully')
-        "
-
-    - name: Upload build artifact (опционально)
-      uses: actions/upload-artifact@v3
-      with:
-        name: app-build
-        path: |
-          *.py
-          requirements.txt
-          static/  # Если есть статические файлы
-          templates/  # Если есть шаблоны
-        retention-days: 5
+        python -c "from pythonProject.atelie.app import app; print('App initialized successfully')"
