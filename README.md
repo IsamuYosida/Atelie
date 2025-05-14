@@ -22,14 +22,10 @@
 Дополнение: требуется создание папки ателье/instance для корректной работы программы. Автоматического создания пока нет
  
 
-# Atelie - Система управления ателье
+# Atelie - тесты
 
 [![CI Tests](https://github.com/IsamuYosida/Atelie/actions/workflows/ci.yml/badge.svg)](https://github.com/IsamuYosida/Atelie/actions)
 [![Coverage](https://codecov.io/gh/IsamuYosida/Atelie/branch/main/graph/badge.svg?token=YOUR_CODECOV_TOKEN)](https://codecov.io/gh/IsamuYosida/Atelie)
-
-## О проекте
-
-Flask-приложение для управления заказами в ателье...
 
 ## CI/CD Статус
 
