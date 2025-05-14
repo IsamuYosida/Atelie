@@ -21,4 +21,4 @@ jobs:
 
     - name: Verify Flask app
       run: |
-        python -c "from atelie.app import app; print('App initialized successfully')"  # Укажите правильный путь к app
+        python -c "from pythonProject.atelie.app import app; print('App initialized successfully')"  # Убедитесь, что путь правильный
