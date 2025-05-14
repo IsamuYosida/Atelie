@@ -17,8 +17,9 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install -r requirements.txt
-        pip install gunicorn
+        python -m pip install --upgrade pip
+        pip install pytest pytest-cov
+        pip install -r ./pythonProject/requirements.txt
 
     - name: Run server (для демонстрации)
       run: |
