@@ -16,9 +16,9 @@ jobs:
     - name: Install dependencies
       run: |
         pip install --upgrade pip
-        pip install -r pythonProject/requirements.txt
+        pip install -r pythonProject/requirements.txt  # Убедитесь, что файл существует
         pip install gunicorn  # Для деплоя
 
     - name: Verify Flask app
       run: |
-        python -c "from app import app; print('App initialized successfully')"
+        python -c "from Atelie.app import app; print('App initialized successfully')"  # Укажите правильный путь к app
