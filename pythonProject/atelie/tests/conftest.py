@@ -55,6 +55,7 @@ def cleanup_test_data(app):
     """Фикстура для автоматической очистки тестовых данных после каждого теста"""
     yield
     with app.app_context():
-        # Удаляем только тестовые данные, оставляя "боевые"
+        # Удаляем все заказы перед удалением продуктов
+        Order.query.delete()  # Сначала удаляем заказы
         Product.query.filter(Product.name.in_(["Test Product", "Футболка", "Джинсы"])).delete()
         db.session.commit()

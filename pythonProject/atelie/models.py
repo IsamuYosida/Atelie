@@ -36,7 +36,7 @@ class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
-    product = db.relationship('Product', backref='orders')  # Добавлено отношение
+    product = db.relationship('Product', backref=db.backref('orders', cascade='all, delete-orphan'))  # Добавлено каскадное удаление
     custom_description = db.Column(db.String(500))
     size = db.Column(db.String(50), nullable=False)
     color = db.Column(db.String(50), nullable=False)
@@ -49,3 +49,4 @@ class Order(db.Model):
     def is_custom(self):
         """Проверяет, является ли заказ авторским."""
         return self.custom_description is not None and self.custom_description != "None"
+
