@@ -15,7 +15,6 @@ login_manager.init_app(app)
 # Инициализация базы данных и миграций
 db.init_app(app)
 migrate.init_app(app, db)
-
 # Регистрация Blueprint
 app.register_blueprint(routes_bp)
 
